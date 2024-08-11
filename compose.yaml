@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgresdb:
+    image: postgres
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
+    ports:
+      - 5432:5432
+    networks:
+      - api
+    volumes:
+      - db:/var/lib/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app:
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    build: ./app
+    restart: 'no'
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=$POSTGRESDB_HOST
+      - DB_USER=$POSTGRESDB_USER
+      - DB_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - DB_NAME=$POSTGRESDB_DATABASE
+      - DATABASE_URL=postgresql://$POSTGRESDB_USER:$POSTGRESDB_ROOT_PASSWORD@$POSTGRESDB_HOST:5432/$POSTGRESDB_DATABASE?schema=public
+    ports:
+      - 6868:8080
+    networks:
+      - api
+    stdin_open: true
+    tty: true
+networks:
+  api:
+volumes: 
+  db:

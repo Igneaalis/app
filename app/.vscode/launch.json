@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Node: Nodemon",
+      "runtimeExecutable": "nodemon",
+      "runtimeArgs": ["--inspect", "--env-file=.env.dev"],
+      "program": "${workspaceFolder}/src/index.ts",
+      "protocol": "inspector",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "db:push",
+      "runtimeExecutable": "dotenv",
+      "runtimeArgs": ["-e=.env.dev", "npm run db:push"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "db:seed",
+      "runtimeExecutable": "dotenv",
+      "runtimeArgs": ["-e=.env.dev", "npm run db:seed"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    }
+  ]
+}
